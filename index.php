@@ -1,3 +1,48 @@
+<?php
+error_reporting(0);    // inbuilt fn
+$error=false;          // var
+$showerror = "";       // str
+$conn = mysqli_connect("localhost", "root", "", "addtocart");    // inbuilt function
+
+if (mysqli_connect_error()) {
+  die("Sorry we failed to connect: " . mysqli_connect_error());
+}
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+   
+  if($_POST['addtocart'] != 0){
+        $image =$_POST['addtocartimage'];   // $image is the data added in the cart, which is taken from (addtocartimage )
+        $price=$_POST['addtocartprice'];
+        $size=$_POST['productsize'];
+        $name=$_POST['addtocartname'];
+        /*
+        echo $size;
+        echo $price;
+        echo $image;*/
+ 
+       
+        if($size != "Select"){ 
+            $sql = "INSERT INTO `productlist` ( `productimage`, `productname`, `productsize`, `productprice`) VALUES ('$image', '$name', '$size', '$price');"; // value is inserted into the table
+            $result = mysqli_query($conn, $sql);
+            if ($result) {
+                $insert = true;
+            }
+        }
+        else {
+            $error=true;
+            $showerror="Please select your size";
+            //     echo "The record was not inserted successfully because of this error ---> " . mysqli_error($conn);
+        }
+    }
+    else{
+        echo "no";
+        echo '<script>
+        console.log("helloe");
+        </script>';
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,6 +62,7 @@
     <!-- Google Fonts -->
 
     <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&display=swap" rel="stylesheet" />
+    
     <!-- Carousel -->
     <link rel="shortcut icon" href="./images/favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/fontawesome.min.css">
@@ -27,15 +73,16 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
     <div class="header">
         <div class = "container">
             <div class="navbar">
                 <div class="logo">
-                    <a href="index.html"><img src="images/logo3.png" alt="" width="70px"></a>
+                    <a href="index.php"><img src="images/logo3.png" alt="" width="70px"></a>
                 </div>
                 <nav>
                     <ul>
-                        <li><a href="index.html">Home</a></li>
+                        <li><a href="index.php">Home</a></li>
                         <!-- <li><a href="">Product</a></li> -->
                         <li><a href="">Contact</a></li>
                         <li><a href="#my-footer">About</a></li>
@@ -62,12 +109,36 @@
                         <!-- button on nav bar -->
                         <a href=""><img src="images/search_logo.png" alt="" width="30px"></a>&nbsp;&nbsp;
                         <img src="images/account_logo.png" alt="" width="30px" class="accountimage">
-                        <a href="cart2.html"><img src="images/logo_cart_new.png" width="30px" height="30px" alt=""></a>
+                        <a href="cart2.php"><img src="images/logo_cart_new.png" width="30px" height="30px" alt=""></a>
                     </nav>
                     
                 </div>
                 <!-- images/cart.png -->
             </div>
+            <?php
+    if ($error) {
+      echo '
+    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+<symbol id="check-circle-fill" fill="currentColor" viewBox="0 0 16 16">
+ <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+</symbol>
+<symbol id="info-fill" fill="currentColor" viewBox="0 0 16 16">
+ <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
+</symbol>
+<symbol id="exclamation-triangle-fill" fill="currentColor" viewBox="0 0 16 16">
+ <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+</symbol>
+</svg>
+    <div class="alert alert-danger alert-dismissible fade show d-flex align-items-center" role="alert">
+    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill"/></svg>
+    <div>
+      <strong>' . $showerror . '</strong>
+    </div>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+
+  </div>';
+    }
+    ?>
 
             <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
                 <div class="carousel-inner">
@@ -125,13 +196,13 @@
     </div>
     <br>
     
-
-        <!-- featured categories -->
-        <h5 class="title" style="padding-top: 50px;" >Featured Products</h5>
+    
+            <!-- featured categories -->
+            <h5 class="title" style="padding-top: 50px;" >Featured Products</h5>
         
           <!-- **** featured products part2 -->
-          <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel" style=" margin-left: 50px; padding-top: 50px; background-color: rgb(235, 229, 220);">
-            <div class="carousel-inner" style="padding-left:150px ">
+          <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel" style=" margin-left: 125px; padding-top: 50px; background-color: rgb(235, 229, 220);">
+            <div class="carousel-inner" style="padding-left:150px; ">
               <div class="carousel-item active">
                 <div class="row">
                     <div class="col-2">
@@ -141,22 +212,22 @@
                     </div>
                     
                     <div class="col-3">
-                        <img src="images/collection_01.png" alt="" padding height="500px">
+                        <img src="images/collection_01.png" alt="First slide" padding height="500px">
                     </div>
                 </div>
               </div>
               <div class="carousel-item">
                 <div class="row">
-                  <div class="col-2">
+                    <div class="col-2">
                       <h1>BEATS Head Phones</h1>
                       <p>With EXTRA BASS <br> Active Noise Cancellation Mode !!</p>
                       <a href="" class="btn">Buy Now &#8594 </a>
-                  </div>
+                    </div>
                   
-                  <div class="col-3">
-                      <img src="images/collection_02.png" alt="" height="500px">
-                  </div>
-              </div>
+                    <div class="col-3">
+                      <img src="images/collection_02.png" alt="First slide" height="500px">
+                    </div>
+                    </div>
               </div>
               <div class="carousel-item">
                 <div class="row">
@@ -167,7 +238,7 @@
                   </div>
                   
                   <div class="col-3">
-                      <img src="images/nikeshoes.png" alt="" height="500px">
+                      <img src="images/nikeshoes.png" alt="First slide" height="500px">
                   </div>
               </div>
               </div>
@@ -183,75 +254,8 @@
         </div>    
         <br>
  
-
-         <!--  Latest products
-         <h5 style="text-align: center;">Latest Products</h5>
-         <div class="slider">
-             <ul class="glide_slides">
-                 <li class="glide_slide">
-                     <div class="col">
-                         <div class="product">
-                         <div class="product_header">
-                             <img src="images/product-6.jpg" alt="" width="250px">
-                         </div>
-     
-                         <div class="product_footer">
-                             <h3>Puma T-Shirts</h3>
-                             <h4>Rs 2,000</h4>
-                             <div class="rating">
-                             <i class="fa fa-star" ></i>
-                             <i class="fa fa-star" ></i>
-                             <i class="fa fa-star" ></i>
-                             <i class="fa fa-star" ></i>
-                         <a href="#"><button type="submit" class="btn">Add To Cart</button></a>
-                         </div>
-                     </div>
-                    </div>
-                    
-                 </li>
-                 <li class="glide_slide">
-                     <div class="product">
-                         <div class="product_header">
-                            <img src="images/products/iPhone/iphone2.jpeg" alt="" width="250px">
-                         </div>
-                         <div class="product_footer">
-                             <h3>Apple iPhone 11</h3>
-                             <h4>Rs 70,000</h4>
-                         <div class="rating">
-                             <i class="fa fa-star" ></i>
-                             <i class="fa fa-star" ></i>
-                             <i class="fa fa-star" ></i>
-                             <i class="fa fa-star" ></i>
-                         </div>
-                         <a href=""><button type="submit" class="btn">Add To Cart</button></a>
-                         </div>
-                     </div>
-                 </li>
-                 <li class="glide_slide">
-                     <div class="product">
-                         <div class="product_header">
-                            <img src="images/product-10.jpg" alt="" width="250px">
-                         </div>
-                         <div class="product_footer">
-                             <h3>HRX Shoes</h3>
-                             <h4>Rs 2,000</h4>
-                         <div class="rating">
-                             <i class="fa fa-star" ></i>
-                             <i class="fa fa-star" ></i>
-                             <i class="fa fa-star" ></i>
-                             <i class="fa fa-star" ></i>
-                         </div>
-                         <a href="#"><button type="submit" class="btn">Add To Cart</button></a>
-                         </div>
-                     </div>
-                 </li>
-             </ul>
-             </div>
-         </div> -->
-    <!-- featured products -->
     <!-- Button trigger modal -->
 
-    
   <!-- Modal -->
   <div class="modal fade " id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" >
@@ -261,30 +265,19 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-              <!--  image=e.target.id;
-                tittle = div.getElementsByTagName("h4")[0].innerHTML;
-                description = div.getElementsByTagName("p")[0].innerHTML;-->
-               <!--
-                    <div class="col-4">
-                        <img src="" alt="" class="productimage">
-                        <h4 class="productname">tittle</h4>
-                        <div class="rating">
-                            <i class="fa fa-star" ></i>
-                             <i class="fa fa-star" ></i>
-                             <i class="fa fa-star" ></i>
-                             <i class="fa fa-star" ></i>
-                             <i class="fa fa-star-half-o"></i>
-                        </div>
-                        <p class="productprice">Rs.2000</p>
-                        <a href=""><button type="submit" class="btn">Add To Cart</button></a>
-                    -->
+
+            <form action="index.php" method="post">  <!--new added -->
+                <input type="hidden" name="addtocart" id="addtocart" class="addtocart">   <!-- id to js(down) then if/else in php(up) -->
+
                     <div class="row">
                         <div class="col-3">
-                            <img src="" alt="" width="250px" height="400px" class="productimage">
+                        <input type="hidden" name="addtocartimage" id="addtocartimage" class="addtocartimage">  <!--new added -->
+                            <img src="" alt="" width="240px" height="400px" class="productimage" id="productimage"  >
                         </div>
-                        <div class="productinfo col-3">
-                            <div class="product_body">
-                            <h1 width="100%" class="productname"></h1>
+                        <div class="productinfo col-3" >
+                            <div class="product_body"style="padding: 10px">
+                            <input type="hidden" name="addtocartname" id="addtocartname" class="addtocartname">  <!--new added -->
+                            <h1 width="100%" class="productname" id="productname"></h1>
                             <div class="rating">
                                 <i class="fa fa-star" ></i>
                                 <i class="fa fa-star" ></i>
@@ -292,17 +285,19 @@
                                 <i class="fa fa-star" ></i>
                                 <i class="fa fa-star-half-o"></i>
                             </div>
-                            <small>M.R.P: <s>Rs.2000</s></small>
-                            <p class="productprice">Rs.2000 </p>
+                            <small class="productpriceWithout"><s></s></small>
+                            <input type="hidden" name="addtocartprice" id="addtocartprice"    
+                                    class="addtocartprice"> <!--new added -->
+                            <p class="productprice" id="productprice" name="productprice"></p>  <!--new added id-->
                             <p>Sizes: </p>
-                                <select class="navdropdown"  style="color: #555;" >
+                                <select class="navdropdown"  style="color: #555;" id="productsize"
+                                 name="productsize">   <!--new added -->
                                     <option > Select</option>
                                     <option> S </option>
                                     <option> M </option>
                                     <option > L </option>
                                     <option > XL </option>   
                                 </select>
-                
                             <a href=""><button type="submit" class="btn" name="add">Add To Cart</button></a>
                             <a href=""><button type="submit" class="btn" name="add">Buy Now</button></a>
                             <ul>
@@ -312,32 +307,24 @@
                                 <li>Care Instructions: Machine Wash</li>
                             </ul>
                         </div>
-                        <!-- <div class="productinfo">
-                        <img src="images/product-2.jpg" alt=""> -->
-                
                      </div> <!-- row end -->
-            
+                </form>
         </div>
-           
         </div>
     </div>
-</div>
+    </div>
 </div>
 
 <!-- Modal -->
 <div class="modal fade" id="accountModal" tabindex="-1" aria-labelledby="accountModalLabel" aria-hidden="true">
     <div class="modal-dialog None">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header" width >
                
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-
-               
-                   
                         <div class="row-10">
-
                             <div class="col-2" >
                                 <div class="form-container">
                                     <div class="form-btn">
@@ -361,12 +348,11 @@
                                             href="https://www.twitter.com"> Twitter</a>
                                         <a href="https://www.instagram.com/" class="fa fa-instagram"></a> <a
                                             href="https://www.instagram.com"> Instagram</a>
-
-
                                     </form>
                                     <form id="RegForm">
-                                        <input type="text" placeholder="Username">
+                                        <input type="text"  placeholder="Username">
                                         <input type="email" placeholder="Email">
+                                        <input type="age" placeholder="Age">
                                         <input type="passward" placeholder="Password">
                                         <button type="submit" class="btn">Register</button>
                                         <hr>
@@ -383,15 +369,11 @@
                                 </div>
                             </div>
                         </div>
-                    
-                
             </div>
-
         </div>
     </div>
 </div>
-
-
+    <!-- latest products -->
     <div class="small-container">
         <h5 class="title">Latest Products</h5>
         <div class="row">
@@ -407,8 +389,7 @@
                   </div>
                   <small>M.R.P: <s>Rs.2500</s></small>
                   <p>Rs.2000</p>
-                  <a href=""><button type="submit" class="btn">Add To Cart</button></a>
-                  
+                  <a href=""><button type="submit" class="btn">Add To Cart</button></a>   
             </div>
             <div class="col-4">
               <img src="images/product-2.jpg" alt=""  class="show" id="images/product-2.jpg">
@@ -632,11 +613,17 @@
                image=e.target.id;
                 tittle = div.getElementsByTagName("h4")[0].innerHTML;
                 description = div.getElementsByTagName("p")[0].innerHTML;
+                descriptionWithout = div.getElementsByTagName("small")[0].innerHTML;
                 
                 console.log(image,tittle, description);
              document.getElementsByClassName('productname')[0].innerHTML=tittle;
              document.getElementsByClassName('productprice')[0].innerHTML=description;
+             document.getElementsByClassName('productpriceWithout')[0].innerHTML=descriptionWithout;
              document.getElementsByClassName('productimage')[0].src=image;
+             document.getElementsByClassName('addtocart')[0].value = 1;    // new added 
+             document.getElementsByClassName('addtocartprice')[0].value = description;
+             document.getElementsByClassName('addtocartname')[0].value = tittle;
+             document.getElementsByClassName('addtocartimage')[0].value = image;
 
 
               $('#exampleModal').modal('toggle');
@@ -644,6 +631,31 @@
             console.log('I am image ');
             })
         })
+        // new added 
+    addtocart = document.getElementsByClassName('btn');   
+    Array.from(addtocart).forEach((element) => {
+        element.addEventListener("click", (e) => {
+            console.log("btn ", e.target.parentNode);
+            div = e.target.parentNode;
+
+            image = div.getElementsByTagName("img")[0].src;
+            tittle = div.getElementsByTagName("h4")[0].innerHTML;
+            description = div.getElementsByTagName("p")[0].innerHTML;
+
+            console.log(image, tittle, description);
+            document.getElementsByClassName('productname')[0].innerHTML = tittle;
+            document.getElementsByClassName('productprice')[0].innerHTML = description;
+            document.getElementsByClassName('productimage')[0].src = image;
+            document.getElementsByClassName('addtocart')[0].value = 1;    // new added
+            document.getElementsByClassName('addtocartprice')[0].value = description;
+            document.getElementsByClassName('addtocartname')[0].value = tittle;
+            document.getElementsByClassName('addtocartimage')[0].value = image;
+
+            $('#exampleModal').modal('toggle');
+            //   modalToggle.toggle();
+            console.log('I am outsider ');
+        })
+    })
     </script>
         
         
@@ -654,6 +666,7 @@
        $('#accountModal').modal('toggle');
     });
     </script>
+
     <script>
     var LoginForm = document.getElementById("LoginForm");
     var RegForm = document.getElementById("RegForm");

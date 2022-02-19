@@ -1,54 +1,3 @@
-<?php
-error_reporting(0);
-$error=false;
-$subtotal=0;
-$showerror = "";
-$conn = mysqli_connect("localhost", "root", "", "addtocart");
-
-if (mysqli_connect_error()) {
-  die("Sorry we failed to connect: " . mysqli_connect_error());
-}
-
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-   
-  if($_POST['addtocart'] != 0){
-    
-    $image =$_POST['addtocartimage'];
-    $price=$_POST['addtocartprice'];
-    $size=$_POST['productsize'];
-    $name=$_POST['addtocartname'];
-/*
- echo $size;
- echo $price;
- echo $image;*/
- 
-       
-if($size!="Select"){
-    $sql = "INSERT INTO `productlist` ( `productimage`, `productname`, `productsize`, `productprice`) VALUES ('$image', '$name', '$size', '$price');";
-    $result = mysqli_query($conn, $sql);
-    if ($result) {
-      $insert = true;
-     }
-    }
-    else {
-        $error=true;
-$showerror="Please select your size";
- //     echo "The record was not inserted successfully because of this error ---> " . mysqli_error($conn);
-    }
-}
-
-    else{
-        echo "no";
-        echo '<script>
-        console.log("helloe");
-        </script>';
-    }
-
-  
- 
-
-}
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -74,7 +23,7 @@ $showerror="Please select your size";
                 </div>
                 <nav>
                     <ul>
-                        <li><a href="index.php">Home</a></li>
+                        <li><a href="index.html">Home</a></li>
                         <!-- <li><a href="">Product</a></li> -->
                         <!-- <li><a href=""></a></li> -->
                         <li><a href="">Contact</a></li>
@@ -85,8 +34,8 @@ $showerror="Please select your size";
                     <nav>
                         <!-- button on nav bar -->
                         <a href=""><img src="images/search_logo.png" alt="" width="30px"></a>&nbsp;&nbsp;
-                        <a href="account.php"><img src="images/account_logo.png" alt="" width="30px"></a>&nbsp;&nbsp;
-                        <a href="cart2.php"><img src="images/logo_cart_new.png" width="30px" height="30px" alt=""></a>
+                        <a href="account.html"><img src="images/account_logo.png" alt="" width="30px"></a>&nbsp;&nbsp;
+                        <a href="cart2.html"><img src="images/logo_cart_new.png" width="30px" height="30px" alt=""></a>
                     </nav>
                     
                 </div>
@@ -94,88 +43,81 @@ $showerror="Please select your size";
             </div>
         </div>
 
-
-
-        
-
     <!-- cart section -->
     <h1 class="title">Cart</h1>
     <div class="cart_page">
-        
         <table width="100%" class="table">
                 <tr>
                     <th>PRODUCT</th>
-                    <th>Size</th>
+                    <th>QUANTITY</th>
                     <!-- <th>UNIT PRICE</th> -->
                     <th>TOTAL</th>
                 </tr>
-
-
-                <?php
-                $sql = "SELECT * FROM `productlist`";
-                $result = mysqli_query($conn, $sql);
-          
-                // Find the number of records returned
-                $num = mysqli_num_rows($result);
-                //echo $num;
-                if ($num > 0) {
-                  // $row = mysqli_fetch_assoc($result);
-                 // $sno = 1;
-                // $subtotal=0;
-                // $po="";
-                  while ($row = mysqli_fetch_assoc($result)) {
-                     // $x="";
-                    $x=substr($row['productprice'],3); 
-                    $p=(int)$x;
-                    $subtotal=$subtotal+$p;
-                     
-                   
-                  
-                echo '
                 <tr>
                     <td>
                       <div class="cart_info">
-                        <img src='.$row['productimage'].' alt="" width="200px">
+                        <img src="images/product-6.jpg" alt="" width="200px">
                         <div>
-                            <p>'.$row['productname'].'</p>
-                           
+                            <p>Puma T-shirt</p>
+                            <small>Price: Rs 2000</small>
                             <br>
                             <a href="">Remove</a>
                         </div>
                       </div>
 
                     </td>
-                    <td> <p>'.$row['productsize'].'</p></td>
-                    <td> <p>'.$row['productprice'].'</p></td>
-                </tr>';
-               
-       
-                }
-                 }
-    ?>
-    </table>
-    <?php
-    $tax=($subtotal*2)/100;
-    $total=$tax+$subtotal;
-    echo '
-        <div class="total_price">
-        <table>
-            <tr>  
-                <td>Subtotal</td> 
-                <td>'.$subtotal.'</td>
-            </tr>
-            <tr>
-                <td>Tax</td>
-                <td>'.$tax.'</td>
-            </tr>
-            <tr>
-                <td>Total</td>
-                <td>Rs.'.$total.'</td>
-            </tr>  
+                    <td><input type="number" value="1"> </td>
+                    <td>Rs 2,000</td>
+                </tr>
+                <tr>
+                    <td>
+                      <div class="cart_info">
+                        <img src="images/products/headphone/headphone5.jpeg" alt="" width="200px">
+                        <div>
+                            <p>Sony Headphones</p>
+                            <small>Price: Rs 20,000</small>
+                            <br>
+                            <a href="">Remove</a>
+                        </div>
+                      </div>
+
+                    </td>
+                    <td><input type="number" value="1"> </td>
+                    <td>Rs 20,000</td>
+                </tr>
+                <tr>
+                    <td>
+                      <div class="cart_info">
+                        <img src="images/products/iPhone/iphone2.jpeg" alt="" width="200px">
+                        <div>
+                            <p>iPhone 11 pro</p>
+                            <small>Price: Rs 70,000</small>
+                            <br>
+                            <a href="">Remove</a>
+                        </div>
+                      </div>
+
+                    </td>
+                    <td><input type="number" value="1"> </td>
+                    <td>Rs 70,000</td>
+                </tr>
         </table>
-        
-        </div>';
-        ?>
+        <div class="total_price">
+            <table>
+                <tr>  
+                    <td>Subtotal</td> 
+                    <td>Rs 92,000</td>
+                </tr>
+                <tr>
+                    <td>Tax</td>
+                    <td>Rs 200</td>
+                </tr>
+                <tr>
+                    <td>Total</td>
+                    <td>Rs 92,200</td>
+                </tr>  
+            </table>
+        </div>
     </div>
     
     <!-- footer -->
